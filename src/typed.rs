@@ -206,6 +206,7 @@ pub struct TypedJobRef<'a, P> {
     backend: &'a dyn ChrononCoordinatorBackend,
     job: Job,
     params_override: Option<P>,
+    actor_override: Option<serde_json::Value>,
 }
 
 impl<'a, P> TypedJobRef<'a, P> {
@@ -217,6 +218,7 @@ impl<'a, P> TypedJobRef<'a, P> {
             backend,
             job,
             params_override: None,
+            actor_override: None,
         }
     }
 
@@ -230,6 +232,16 @@ impl<'a, P> TypedJobRef<'a, P> {
     pub fn params(mut self, params: P) -> Self {
         self.params_override = Some(params);
         self
+    }
+
+    /// Snapshot the live Valence actor onto the next run (user-triggered enqueue).
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ChrononError::ParamError`] when the actor cannot be serialized.
+    pub fn with_actor_from_valence(mut self, valence: &valence::Valence) -> Result<Self> {
+        self.actor_override = Some(crate::snapshot_actor_json(valence)?);
+        Ok(self)
     }
 }
 
@@ -245,7 +257,7 @@ where
             None => None,
         };
         self.backend
-            .run_now_with_params(&self.job.job_id, params_override)
+            .run_now_with_params_and_actor(&self.job.job_id, params_override, self.actor_override)
             .await
     }
 }
