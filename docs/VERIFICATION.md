@@ -5,18 +5,34 @@ Re-run after code or doc changes. Covered by unit + integration tests below.
 
 ## Environment
 
+Match [`.github/workflows/ci.yml`](../.github/workflows/ci.yml):
+
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-chronon-coordinator
+export RUSTFLAGS="-D warnings"
 ```
+
+Toolchain: stable (same as CI).
+
+## PR CI parity
+
+Required PR job `quality`:
+
+| CI step | Local command |
+|--------|----------------|
+| Formatting | `cargo fmt --all -- --check` |
+| Clippy | `cargo clippy --all-targets --all-features -- -D warnings` |
+| Test | `cargo test --all-features` |
+| cargo doc | `RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features` |
 
 ## Unit + integration (CI)
 
 ```bash
-cargo fmt --all --check
-cargo clippy --all-targets -- -D warnings
-cargo test
-cargo doc --no-deps
+cargo fmt --all -- --check
+cargo clippy --all-targets --all-features -- -D warnings
+cargo test --all-features
+RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
 ```
 
 ### TEST_MAP
