@@ -108,4 +108,17 @@ pub trait ChrononCoordinatorBackend: Send + Sync {
         job_id: &str,
         params_override: Option<serde_json::Value>,
     ) -> Result<String>;
+
+    /// Like [`Self::run_now_with_params`], but also snapshots `actor_override` onto the run when
+    /// `Some` (user-triggered enqueue). When `None`, inherits the job's stored `actor_json`
+    /// (default jobs stay System).
+    async fn run_now_with_params_and_actor(
+        &self,
+        job_id: &str,
+        params_override: Option<serde_json::Value>,
+        actor_override: Option<serde_json::Value>,
+    ) -> Result<String> {
+        let _ = actor_override;
+        self.run_now_with_params(job_id, params_override).await
+    }
 }
