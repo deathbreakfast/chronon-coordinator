@@ -142,7 +142,7 @@ dependencies = [
 [[package]]
 name = "chronon-core"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#25f4c532d00dec8f9748014e7183b6c4a77c6f0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
 dependencies = [
  "async-trait",
  "chrono",
@@ -156,7 +156,7 @@ dependencies = [
 [[package]]
 name = "chronon-executor"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#25f4c532d00dec8f9748014e7183b6c4a77c6f0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
 dependencies = [
  "chrono",
  "chronon-core",
@@ -171,7 +171,7 @@ dependencies = [
 [[package]]
 name = "chronon-scheduler"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#25f4c532d00dec8f9748014e7183b6c4a77c6f0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -189,7 +189,7 @@ dependencies = [
 [[package]]
 name = "chronon-telemetry"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#25f4c532d00dec8f9748014e7183b6c4a77c6f0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
 dependencies = [
  "parking_lot",
  "tracing",
@@ -776,7 +776,7 @@ dependencies = [
 [[package]]
 name = "uf-valence"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#6a27698507c61eb5ce0287e28798b8711f14a994"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
 dependencies = [
  "uf-valence-backend-mem",
  "uf-valence-core",
@@ -786,7 +786,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-backend-mem"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#6a27698507c61eb5ce0287e28798b8711f14a994"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
 dependencies = [
  "async-trait",
  "serde_json",
@@ -797,7 +797,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-core"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#6a27698507c61eb5ce0287e28798b8711f14a994"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
 dependencies = [
  "async-trait",
  "chrono",
@@ -816,7 +816,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-macros"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#6a27698507c61eb5ce0287e28798b8711f14a994"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -827,7 +827,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-schema-dsl"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#6a27698507c61eb5ce0287e28798b8711f14a994"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -837,7 +837,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-telemetry"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#6a27698507c61eb5ce0287e28798b8711f14a994"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
 dependencies = [
  "serde_json",
 ]
