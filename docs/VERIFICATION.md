@@ -25,6 +25,8 @@ Required PR job `quality`:
 | Clippy | `cargo clippy --all-targets --all-features -- -D warnings` |
 | Test | `cargo test --all-features` |
 | cargo doc | `RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features` |
+| Dependency policy | `cargo deny check` |
+| Advisories | `cargo audit` |
 
 ## Unit + integration (CI)
 
@@ -33,6 +35,8 @@ cargo fmt --all -- --check
 cargo clippy --all-targets --all-features -- -D warnings
 cargo test --all-features
 RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
+cargo deny check
+cargo audit
 ```
 
 ### TEST_MAP
@@ -50,6 +54,9 @@ RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
 | `typed_job_ref_for_script` / `TypedJobRef::run_now` | integ | resolve + run; params override forwarded | missing job → `JobNotFound`; script mismatch → `ScriptMismatch` | typed param override recorded |
 | `ensure_default_jobs_embedded(+skip)` | integ | upserts inventory probe job | upsert deny → `anyhow` with job name; skip omits probe | `tests/default_jobs_contract.rs` |
 | `register_default_jobs_embedded(+skip)` | integ | factory + ensure upserts probe; skip omits | factory / ensure / rebuild-after-probe failure logged, no panic, no upsert | fire-and-forget boot helper |
+| `run_now_with_params_and_actor` (trait default) | integ | params forwarded to `run_now_with_params`; `None` overrides forwarded as `None`; `actor_override` dropped | backend `JobNotFound` propagates, nothing recorded | `tests/scheduler_contract.rs` |
+| `Scheduler::from_registry` / `registry` / `registry_arc` / `script` | integ | handles share one registry; `list_scripts` agrees; builder targets the handle's script | — | `tests/scheduler_contract.rs` |
+| `ScriptScheduler` `timezone` / `run_once_at` / name check | integ | timezone persisted with cron; run-once schedule persisted | invalid timezone → `InvalidTimezone`; missing name → `ParamError`; neither upserts | `tests/scheduler_contract.rs` |
 
 ## Notes
 
