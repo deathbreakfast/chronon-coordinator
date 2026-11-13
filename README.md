@@ -27,7 +27,7 @@ backend.upsert_job_with_valence(&valence, job).await?;
 
 ## About
 
-- `ChrononCoordinatorBackend` — object-safe job/run/revision **admin** trait (persist, run-now, list)
+- `ChrononCoordinatorBackend` — object-safe job/run/revision **admin** trait (persist, run-now, list; `list_runs_after` pages runs by `RunKey` cursor)
 - `JobBuilder` — Valence wrapper over Chronon's preferred `chronon_scheduler::JobBuilder` (schedules)
 - `Scheduler` — discovery over the script registry
 - `ensure_default_jobs_embedded` / `register_default_jobs_embedded` — inventory bootstrap

@@ -57,6 +57,7 @@ cargo audit
 | `run_now_with_params_and_actor` (trait default) | integ | params forwarded to `run_now_with_params`; `None` overrides forwarded as `None`; `actor_override` dropped | backend `JobNotFound` propagates, nothing recorded | `tests/scheduler_contract.rs` |
 | `Scheduler::from_registry` / `registry` / `registry_arc` / `script` | integ | handles share one registry; `list_scripts` agrees; builder targets the handle's script | — | `tests/scheduler_contract.rs` |
 | `ScriptScheduler` `timezone` / `run_once_at` / name check | integ | timezone persisted with cron; run-once schedule persisted | invalid timezone → `InvalidTimezone`; missing name → `ParamError`; neither upserts | `tests/scheduler_contract.rs` |
+| `list_runs_after` (trait default over `list_runs`) | integ | 2,500 runs paged 100 at a time match the newest-first oracle once each (no filter, job, status); cursor row excluded; unknown status passed through; inserts between pages: older returned, newer not; offset shifts mid-scan deduped | scan stops at `LIST_RUNS_AFTER_SCAN_CAP`: only the newest 10,000 runs are reachable, no read past the cap | `tests/keyset_contract.rs` |
 
 ## Notes
 

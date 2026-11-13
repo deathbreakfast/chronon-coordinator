@@ -30,6 +30,9 @@
 //!   schedules stay aligned with code. [Get started](#bootstrap-default-jobs-at-boot)
 //! - **Coordinator backend** — [`ChrononCoordinatorBackend`] admin trait (upsert, list, pause,
 //!   run-now) for portable product code ([`ChrononCoordinatorBackend`] API reference)
+//! - **Run paging** — Page the run history newest first by cursor with
+//!   [`ChrononCoordinatorBackend::list_runs_after`] and a [`RunKey`], stable under concurrent
+//!   inserts (offset paging through `list_runs` can skip or repeat rows).
 //!
 //! *One coordinator trait — the same product code administers and inspects Chronon jobs whether
 //! they run in this process or behind a split runtime. Schedule fluent API stays in Chronon.*
@@ -197,14 +200,14 @@ mod scheduler;
 mod typed;
 
 pub use chronon_core::{
-    ChrononError, Job, JobRevision, MisfirePolicy, Result, RetryPolicy, Run, RunStatus,
+    ChrononError, Job, JobRevision, MisfirePolicy, Result, RetryPolicy, Run, RunKey, RunStatus,
     ScheduleKind, Script, ScriptHandle,
 };
 /// Upstream script registry re-export, shared by [`Scheduler`] and [`ScriptHandle`] discovery.
 pub use chronon_executor::ScriptRegistry;
 /// Parsed cron expression re-export, used by [`JobBuilder::cron`].
 pub use chronon_scheduler::CronExpr;
-pub use coordinator_trait::ChrononCoordinatorBackend;
+pub use coordinator_trait::{ChrononCoordinatorBackend, LIST_RUNS_AFTER_SCAN_CAP};
 pub use default_job::{
     default_job_schedule_equivalent, ensure_default_jobs_embedded,
     ensure_default_jobs_embedded_with_skip, merge_default_job_schedule_fields,
@@ -221,7 +224,7 @@ pub use typed::{typed_job_ref_for_script, ScriptScheduler, TypedJobRef};
 /// Re-exports model types under [`models`] for the `chronon_coordinator::models::*` import path.
 pub mod models {
     pub use chronon_core::{
-        Job, JobRevision, MisfirePolicy, RetryPolicy, Run, RunStatus, ScheduleKind, Script,
+        Job, JobRevision, MisfirePolicy, RetryPolicy, Run, RunKey, RunStatus, ScheduleKind, Script,
     };
 }
 

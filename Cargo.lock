@@ -131,7 +131,7 @@ dependencies = [
 [[package]]
 name = "chronon-coordinator-macros"
 version = "0.1.0"
-source = "git+https://github.com/unified-field-dev/chronon-coordinator-macros?branch=main#e5a525806ccec70c95e150a22cc94aa71c23f831"
+source = "git+https://github.com/unified-field-dev/chronon-coordinator-macros?branch=main#5b7eb344b4ad1822dea6dc71e4ff5dba116ea4ab"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -142,7 +142,7 @@ dependencies = [
 [[package]]
 name = "chronon-core"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#7a3e56f50aff8685d8dffa8b99c2950c06531b71"
 dependencies = [
  "async-trait",
  "chrono",
@@ -156,7 +156,7 @@ dependencies = [
 [[package]]
 name = "chronon-executor"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#7a3e56f50aff8685d8dffa8b99c2950c06531b71"
 dependencies = [
  "chrono",
  "chronon-core",
@@ -171,7 +171,7 @@ dependencies = [
 [[package]]
 name = "chronon-scheduler"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#7a3e56f50aff8685d8dffa8b99c2950c06531b71"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -189,7 +189,7 @@ dependencies = [
 [[package]]
 name = "chronon-telemetry"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/chronon?branch=main#1227a568423becd0ba8b28bea91a157881581b0b"
+source = "git+https://github.com/unified-field-dev/chronon?branch=main#7a3e56f50aff8685d8dffa8b99c2950c06531b71"
 dependencies = [
  "parking_lot",
  "tracing",
@@ -776,7 +776,7 @@ dependencies = [
 [[package]]
 name = "uf-valence"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#ef2ce1ea8bc23655c2eb2f17b557213bf04451d5"
 dependencies = [
  "uf-valence-backend-mem",
  "uf-valence-core",
@@ -786,7 +786,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-backend-mem"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#ef2ce1ea8bc23655c2eb2f17b557213bf04451d5"
 dependencies = [
  "async-trait",
  "serde_json",
@@ -797,7 +797,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-core"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#ef2ce1ea8bc23655c2eb2f17b557213bf04451d5"
 dependencies = [
  "async-trait",
  "chrono",
@@ -816,7 +816,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-macros"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#ef2ce1ea8bc23655c2eb2f17b557213bf04451d5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -827,7 +827,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-schema-dsl"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#ef2ce1ea8bc23655c2eb2f17b557213bf04451d5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -837,7 +837,7 @@ dependencies = [
 [[package]]
 name = "uf-valence-telemetry"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/valence?branch=main#83db733504a2b5b476591d78252e62c80c4d5bad"
+source = "git+https://github.com/unified-field-dev/valence?branch=main#ef2ce1ea8bc23655c2eb2f17b557213bf04451d5"
 dependencies = [
  "serde_json",
 ]

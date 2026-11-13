@@ -1,8 +1,20 @@
 //! Object-safe coordinator surface for local and distributed Chronon backends.
 
+use std::collections::HashSet;
+
 use async_trait::async_trait;
-use chronon_core::{Job, JobRevision, Result, Run};
+use chronon_core::{Job, JobRevision, Result, Run, RunKey};
 use valence::Valence;
+
+/// Most rows the default [`ChrononCoordinatorBackend::list_runs_after`] reads before it stops.
+///
+/// The default body scans [`ChrononCoordinatorBackend::list_runs`] from offset 0 and gives up
+/// after this many rows, so runs older than the newest `LIST_RUNS_AFTER_SCAN_CAP` are never
+/// returned by it. Backends that override `list_runs_after` are not limited by this value.
+pub const LIST_RUNS_AFTER_SCAN_CAP: usize = 10_000;
+
+/// Rows requested per [`ChrononCoordinatorBackend::list_runs`] call in the default scan.
+const LIST_RUNS_AFTER_CHUNK: usize = 500;
 
 /// Job/runs/revisions **admin** for server integration, UI server functions, and macros.
 ///
@@ -65,6 +77,9 @@ pub trait ChrononCoordinatorBackend: Send + Sync {
     async fn list_jobs(&self) -> Vec<Job>;
 
     /// List runs, optionally filtered by job id and/or status, with pagination.
+    ///
+    /// Offset pages can skip or repeat rows when runs are inserted between reads; use
+    /// [`Self::list_runs_after`] for stable cursor paging.
     async fn list_runs(
         &self,
         job_id: Option<&str>,
@@ -72,6 +87,69 @@ pub trait ChrononCoordinatorBackend: Send + Sync {
         offset: usize,
         limit: usize,
     ) -> Result<Vec<Run>>;
+
+    /// Keyset run listing: up to `limit` runs that sort strictly after `after`.
+    ///
+    /// Pass the [`RunKey`] of the last run on a page (`RunKey::from(&run)`) to read the next
+    /// page; `None` starts at the newest run. The contract matches
+    /// [`chronon_core::SchedulerStore::list_runs_after`]:
+    ///
+    /// - Order is `scheduled_for` descending, then `run_id` descending as the tie-break.
+    /// - With `Some(key)` only runs whose `(scheduled_for, run_id)` is lower than
+    ///   `(key.scheduled_for, key.run_id)` are returned; the run at `key` itself is excluded, and
+    ///   it does not need to still exist.
+    /// - `job_id` and `status` filter rows before the limit is applied. `status` is interpreted
+    ///   the same way as in [`Self::list_runs`] (the default body passes it through unchanged;
+    ///   the upstream runtime ignores unrecognized status strings).
+    /// - Paging with the key of the last row of each page visits every matching run exactly
+    ///   once. A run inserted during the scan is returned only if its key sorts after the
+    ///   current `after` (older than the last row read); one with a newer key is not returned by
+    ///   later pages and shows up when the caller starts again from `None`.
+    ///
+    /// # Default body
+    ///
+    /// The default exists so backends written before this method keep compiling. It pages
+    /// through [`Self::list_runs`] in chunks of 500 from offset 0, keeps the rows after `after`,
+    /// sorts them, drops repeated `run_id`s (offset pages can repeat rows when runs are inserted
+    /// mid-scan), and truncates to `limit`. Every call is O(n) in the matching rows and stops
+    /// after [`LIST_RUNS_AFTER_SCAN_CAP`] rows, so older runs past the cap are never returned.
+    /// Backends over a Chronon runtime should override it and call
+    /// `CoordinatorService::list_runs_after` (or the store's `list_runs_after`) directly.
+    async fn list_runs_after(
+        &self,
+        job_id: Option<&str>,
+        status: Option<&str>,
+        after: Option<&RunKey>,
+        limit: usize,
+    ) -> Result<Vec<Run>> {
+        if limit == 0 {
+            return Ok(Vec::new());
+        }
+        let mut matches: Vec<Run> = Vec::new();
+        let mut offset: usize = 0;
+        while offset < LIST_RUNS_AFTER_SCAN_CAP {
+            let chunk = LIST_RUNS_AFTER_CHUNK.min(LIST_RUNS_AFTER_SCAN_CAP - offset);
+            let page = self.list_runs(job_id, status, offset, chunk).await?;
+            let fetched = page.len();
+            matches.extend(page.into_iter().filter(|run| sorts_after(run, after)));
+            offset += fetched;
+            if fetched < chunk {
+                break;
+            }
+        }
+        if offset >= LIST_RUNS_AFTER_SCAN_CAP {
+            log::warn!(
+                target: "chronon_coordinator",
+                "default list_runs_after stopped at the {LIST_RUNS_AFTER_SCAN_CAP}-row scan cap; \
+                 older runs are not listed (override list_runs_after on this backend)"
+            );
+        }
+        sort_newest_first(&mut matches);
+        let mut seen: HashSet<String> = HashSet::new();
+        matches.retain(|run| seen.insert(run.run_id.clone()));
+        matches.truncate(limit);
+        Ok(matches)
+    }
 
     /// Load one run by id.
     async fn get_run(&self, run_id: &str) -> Result<Option<Run>>;
@@ -121,4 +199,20 @@ pub trait ChrononCoordinatorBackend: Send + Sync {
         let _ = actor_override;
         self.run_now_with_params(job_id, params_override).await
     }
+}
+
+/// Whether `run` sorts strictly after `after` in the newest-first order (`None` admits all).
+fn sorts_after(run: &Run, after: Option<&RunKey>) -> bool {
+    after.is_none_or(|key| {
+        (run.scheduled_for, run.run_id.as_str()) < (key.scheduled_for, key.run_id.as_str())
+    })
+}
+
+/// Sort by `scheduled_for` descending, then `run_id` descending.
+fn sort_newest_first(runs: &mut [Run]) {
+    runs.sort_by(|a, b| {
+        b.scheduled_for
+            .cmp(&a.scheduled_for)
+            .then_with(|| b.run_id.cmp(&a.run_id))
+    });
 }
